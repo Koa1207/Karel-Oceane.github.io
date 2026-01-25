@@ -1,0 +1,214 @@
+<!DOCTYPE html> <!--This tells the browser what type of document it is: html-->
+<html lang="en"> <!--Documenet is written in the language english-->
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equive="X-UA-Compatible" content="IE-edge">
+
+        <meta name ="viewpoint" content="width=device-width, initial-scale=1.0">
+        <title> Karel-Oceane Akolly</title>
+
+        <link rel="stylesheet" href="Main.css"> 
+
+        <script src="https://kit.fontawesome.com/b698b885fa.js" crossorigin="anonymous"></script> <!---Link from font awesome where fonts from the website can be imported into the html file-->
+        
+    </head>
+    <body>
+      <div id = "header">
+        <div class="container">
+            <nav>
+                <ul>
+                    <li> <a href= "#header"> Home</a></li> <!--This links to a section of the page by using <a href = " div Id"> -->
+                    <li> <a href="#about"> About</a></li>
+                    <li> <a href="#Projects"> Projects</a></li>
+        
+                </ul>
+            </nav>
+            <div class="header-text">
+                <p> Business and Computer science graduate</p>
+                <h1> Hi, <br> I'm <span> Karel-Océane </span> <br>  from london</h1> <!-- the <span> is used to highlight the text and the <br> is to break the line of text for nextline-->
+            </div>
+        </div>
+      </div>
+      <!-- -------------------------ABOUT SECTION------------------------------- -->
+        <div id="about">
+            <div class="container">
+                <div class = "row">
+                    <div class ="about-col-1"><!-- link image here--> </div>
+                    <div class ="about-col-2">
+                        <h1 class="sub-title">About Me</h1>
+                        <br>
+                        <p> A passionate graduate with a Bachelor's degree in Business and Computer Science, specializing in Human and Computer Interaction. 
+                        <br> Throughout my academic journey, I've developed a strong understanding of the intersection between business strategies and technological innovation, </br> 
+                        with a keen focus on enhancing user experiences. </p>
+
+                        <div class="tab-titles">
+                            <p class="tab-links active-link" onclick="opentab('skills')">Skills</p>
+                            <p class="tab-links"onclick="opentab('education')">Education</p> <!--- onclick="opentab('skills')" this is to open the content when the user clicks on the tab-->
+                        </div>
+
+                        <div class="tab-contents active-tab" id="skills">
+                            <ul>
+                                <li> <span> Promgramming: </span><br> Java and Python</li>
+                                <li> <span> SQL:</span><br> Enquiries and data retrieval in postgresql</li>
+                                <li> <span> Web development:</span><br> Front and back end with HTML, CSS and Javascript <li>
+                                <li> <span> Business modelling:</span><br> Illustrating models using BPMN and simul8</li>
+                                <li> <span> Microsft Excel:</span><br> Data cleaning and pivot tables</li>
+                                <li> <span> Data Visualisation:</span><br> Tableau</li>
+                                <li> <span> Languages:</span><br> Native French</li>
+                            </ul>
+                        </div>
+                        <div class="tab-contents " id="education">
+                            <ul>
+                                <li> <span> Business computing (Human and computer interaction) BSc</span><br> 2019-2023</li>
+                                
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--- the script below defines the tablinks and tabcontents activating the opening tab action-->
+
+        <!------------Projects/ Portfolio------------------>
+        <div id="Projects">
+            <div class="container">
+    
+                <h1 class="sub-title"> My Projects</h1>
+                <div class="work-list"> <!--All projects are displayed within this container-->
+            
+                  <!---First project section---------->
+                   
+
+                    <div class="work">
+                        <img src="Images/Foundation shades.jpeg"> <!--Enter image of work from file-->
+                        <div class="layer">
+                            <h3> Shades of beauty: Where to find darker shades</h3>
+                            <p> This project is an explorative and imformative  analysis for foundation shades across retailers and what it means for 
+                                darker shades </p>
+                            <a href=" https://public.tableau.com/views/Makeupfoundation/Dashboard1?:language=en-GB&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link"> <i class="fa-solid fa-arrow-up-right-from-square"></i></a> <!--Link to the project along with the icon link-->
+                       </div>
+                 </div>
+                    
+        
+                
+                
+    
+                
+
+                 <!---Second project section---------->
+                    <div class="work">
+                        <img src="Images/Work-2.png"> <!--Enter image of work from file-->
+                        <div class="layer">
+                            <h3> UK's Renewable Energy Consumption</h3>
+                            <p> This project focuses on SQL data exploration and Tableau Visualisation of UK renewable energy, 1990-2020 </p>
+                            <a href="UK_Renewable_Energy.html"> <i class="fa-solid fa-arrow-up-right-from-square"></i></a> <!--Link to the project along with the icon link-->
+                        </div>
+                    </div>
+
+                 <!---Third project section---------->
+                    <div class="work">
+                        <img src="Images/Credit card.jpg"> <!--Enter image of work from file-->
+                        <div class="layer">
+                            <h3> Credit Card Checks</h3>
+                            <p> This project focuses on SQL data of credit card checks</p>
+                            <a href="https://public.tableau.com/views/TheMitronBankCreditCardAdoptionPotentialInGroceryUPIUsers/Dashboard1?:language=en-GB&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link"> <i class="fa-solid fa-arrow-up-right-from-square"></i></a> <!--Link to the project along with the icon link-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!------------SERVICES-------------------------------->
+
+      <!----  <div id="Interface development">
+            <div class="container">
+                <h1 class="sub-title"> Interface Development</h1>
+                <div class="services-list">
+                    <div>
+                        <!---- data icon spin temporary disabled  <i class="fa-regular fa-database fa-spin"></i> ---> <!--Database Icon imported from font awesome-->
+                         <!-- <h2> Birthday cake suprise </h2>
+                        <p> This project involves Html, css and javascript. Blow out the candles using microphone input</p>
+                        <a href="https://koa1207.github.io/Interactive-birthday-surprise/"> Click here to try it out!</a>
+                    </div>
+                    <!--<div> 
+                        <!---- Icon diabled for web development <i class="fa-solid fa-code fa-spin"></i> <!--Code Icon imported from font awesome-->
+                       <!--- <h2> Currency converter </h2>
+                        <p> html, css and python</p>
+                        <a href="#"> learn more</a>
+                    </div>
+                    <!-----<div>
+                         <i class="fa-solid fa-pen fa-spin"></i> <!--UX Icon imported from font awesome-->
+                        <!--- <h2> UX/UI Design </h2>
+                        <p> Offer vdata analytics services which includes data cleaning, data visualisation</p>
+                        <a href="#"> learn more</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        ---->
+
+        <!------------------CONTACT------------------------------------>
+       <!------------
+        div id = "Contact">
+            <div class="Contact-left">
+                <h1 class = "Sub-title"> Contact Me</h1>
+                <p> oceaneakolly@gmail.com</p>
+                <div class = "Social-icons">
+                    <a href = ""><i class="fa-brands fa-linkedin"></i></a>
+                    <a href =""> <i class="fa-solid fa-envelope"></i></a>
+                </div>
+            </div>
+            <div class="Contact-right">
+                <form>
+                    <input type = "Text" name ="Name" placeholder="Name" required> 
+                    <input type ="email" name="email" placeholder = "Email" required>
+                    <textarea name= "Message" rows = "7" placeholder = "Your Message"></textarea>
+                    <button type ="Submit"> submit</button>
+                </form>
+            </div>
+        </div>
+        
+    
+     ----------------------------> 
+            
+             
+        
+     <script>
+
+        var tablinks = document.getElementsByClassName("tab-links");
+        var tabcontents = document.getElementsByClassName("tab-contents"); 
+
+        function opentab(tabname){
+             for(tablink of tablinks){
+            tablink.classList.remove("active-link");
+          
+             }
+            for(tabcontents of tabcontents){
+            tabcontents.classList.remove("active-tab");
+          
+             }
+          event.currentTarget.classList.add("active-link");
+          document.getElementById(tabname).classList.add("active-tab");
+        }
+
+
+        function closetab(tabname){
+            for(tablink of tablinks){
+                tablink.classList.add("active-link");
+        
+            }
+            for (tabcontents of tabcontents){
+                tabcontents.classList.add("active-tab");
+               
+            }
+          event.currentTarget.classList.remove("active-link");
+             documenet.getElementById(tabname).classList.remove("active-tab");
+        }
+
+     </script>
+     <!----The event.currentTarget activates the display of content when the tab is selected. Any tab with the assignment 'Tabname' will display its contents when selected.-->
+    </body>
+</html>
