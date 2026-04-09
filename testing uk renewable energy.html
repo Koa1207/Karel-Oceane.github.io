@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UK Renewable Energy Consumption 1990–2020</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:       #f4f1eb;
+      --paper:    #faf8f3;
+      --ink:      #1a1a18;
+      --ink2:     #3d3d38;
+      --muted:    #7a7870;
+      --green:    #2d6a4f;
+      --green2:   #40916c;
+      --green3:   #b7e4c7;
+      --accent:   #e76f51;
+      --border:   #d8d4c8;
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body:    'IBM Plex Sans', sans-serif;
+      --font-mono:    'IBM Plex Mono', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    /* ── NAV ── */
+    .navbar {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--ink);
+      padding: 0 6%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      border-bottom: 3px solid var(--green);
+    }
+
+    .navbar-brand {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--green3);
+      letter-spacing: 0.12em;
+      text-decoration: none;
+    }
+
+    .navbar-links {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .navbar a {
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      border-radius: 2px;
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .navbar a:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.08);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--ink);
+      padding: 80px 6% 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 420px; height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(45,106,79,0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-meta {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--green2);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.1;
+      max-width: 700px;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--green3);
+    }
+
+    .hero-sub {
+      margin-top: 20px;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.92rem;
+      max-width: 500px;
+    }
+
+    /* ── COVER IMAGE ── */
+    .cover-wrap {
+      width: 90%;
+      max-width: 880px;
+      margin: 0 auto;
+      transform: translateY(-32px);
+    }
+
+    .cover-wrap img {
+      width: 100%;
+      max-height: 380px;
+      object-fit: cover;
+      border-radius: 6px;
+      display: block;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    }
+
+    /* ── MAIN CONTENT ── */
+    .container {
+      width: 90%;
+      max-width: 880px;
+      margin: 0 auto 80px;
+    }
+
+    /* ── SECTION ── */
+    section {
+      margin-bottom: 64px;
+      scroll-margin-top: 72px;
+    }
+
+    .section-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--green2);
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.2;
+      margin-bottom: 24px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h3 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--ink2);
+      margin: 24px 0 10px;
+    }
+
+    p {
+      color: var(--ink2);
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+    }
+
+    ul, ol {
+      margin: 12px 0 12px 20px;
+    }
+
+    li {
+      color: var(--ink2);
+      font-size: 0.93rem;
+      margin-bottom: 8px;
+    }
+
+    strong { font-weight: 500; color: var(--ink); }
+
+    /* ── DATASET META ── */
+    .meta-list {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      background: var(--paper);
+      padding: 14px 22px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .meta-item:last-child { border-bottom: none; }
+
+    .meta-item:nth-child(even) { background: var(--bg); }
+
+    .meta-item .meta-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      min-width: 180px;
+      flex-shrink: 0;
+    }
+
+    .meta-item .meta-value {
+      font-size: 0.9rem;
+      color: var(--ink);
+      font-weight: 400;
+    }
+
+    /* ── KPI CARDS ── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .kpi-col {
+      background: var(--ink);
+      border-radius: 6px;
+      padding: 28px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-col::before {
+      content: '';
+      position: absolute;
+      bottom: -20px; right: -20px;
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: rgba(45,106,79,0.25);
+    }
+
+    .kpi-number {
+      font-family: var(--font-display);
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--green3);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .kpi-col h3 {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-style: normal;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.9);
+      margin: 0 0 8px;
+    }
+
+    .kpi-col p {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.45);
+      margin: 0;
+    }
+
+    /* ── IMAGES ── */
+    .section-img {
+      width: 100%;
+      border-radius: 6px;
+      margin: 20px 0;
+      border: 1px solid var(--border);
+    }
+
+    .img-caption {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: -10px;
+      margin-bottom: 20px;
+    }
+
+    /* ── INSIGHT CALLOUT ── */
+    .insight-callout {
+      border-left: 3px solid var(--green);
+      background: var(--paper);
+      padding: 20px 24px;
+      border-radius: 0 6px 6px 0;
+      margin: 24px 0;
+    }
+
+    .insight-callout p {
+      margin: 0;
+      font-size: 0.92rem;
+      color: var(--ink2);
+    }
+
+    /* ── RANKED LIST ── */
+    .ranked-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .ranked-list li {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      margin: 0;
+    }
+
+    .ranked-list li:last-child { border-bottom: none; }
+
+    .rank-num {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--green3);
+      line-height: 1;
+      min-width: 36px;
+      opacity: 0.6;
+    }
+
+    .rank-content strong {
+      display: block;
+      font-size: 0.92rem;
+      margin-bottom: 4px;
+    }
+
+    .rank-content span {
+      font-size: 0.83rem;
+      color: var(--muted);
+    }
+
+    /* ── DASHBOARD CTA ── */
+    .dashboard-cta {
+      background: linear-gradient(135deg, var(--green) 0%, #1b4332 100%);
+      border-radius: 8px;
+      padding: 48px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dashboard-cta::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .dashboard-cta h3 {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      color: #fff;
+      font-style: normal;
+      margin: 0 0 10px;
+    }
+
+    .dashboard-cta p {
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 28px;
+      font-size: 0.9rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      color: var(--green);
+      padding: 14px 32px;
+      text-decoration: none;
+      border-radius: 3px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--green3);
+      transform: translateY(-2px);
+    }
+
+    .btn svg { width: 14px; height: 14px; }
+
+    /* ── REC CARDS ── */
+    .recommendations-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .rec-card {
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 28px 24px;
+      transition: border-color 0.3s, transform 0.25s;
+    }
+
+    .rec-card:hover {
+      border-color: var(--green2);
+      transform: translateY(-4px);
+    }
+
+    .rec-icon {
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+      margin-bottom: 16px;
+      opacity: 0.85;
+    }
+
+    .rec-card h3 {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-style: normal;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      margin: 0 0 10px;
+    }
+
+    .rec-card p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    /* ── CONCLUSION ── */
+    .conclusion-box {
+      background: var(--ink);
+      border-radius: 6px;
+      padding: 40px;
+    }
+
+    .conclusion-box p {
+      color: rgba(255,255,255,0.7);
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+    }
+
+    .conclusion-box p:last-child { margin: 0; }
+
+    /* ── FOOTER ── */
+    .footer {
+      background: var(--ink);
+      text-align: center;
+      padding: 28px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .footer a {
+      color: var(--green3);
+      text-decoration: none;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 680px) {
+      .kpi-grid { grid-template-columns: 1fr; }
+      .recommendations-grid { grid-template-columns: 1fr; }
+      .navbar-links { display: none; }
+      .dashboard-cta { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">← KO / Akolly</a>
+    <div class="navbar-links">
+      <a href="#Overview">Overview</a>
+      <a href="#KPIs">KPIs</a>
+      <a href="#Insights">Insights</a>
+      <a href="#Dashboard">Dashboard</a>
+      <a href="#Recommendations">Recs</a>
+      <a href="#Conclusions">Conclusion</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <p class="hero-meta">Data Analytics · Portfolio Project</p>
+    <h1>UK Renewable Energy<br><em>Consumption</em></h1>
+    <p class="hero-sub">An exploratory analysis of the United Kingdom's renewable energy landscape from 1990 to 2020.</p>
+  </div>
+
+  <!-- COVER IMAGE -->
+  <div class="cover-wrap">
+    <img src="Images/Uk Renewable images/gettyimages-1032683612-1.jpeg" alt="UK Renewable Energy">
+  </div>
+
+  <div class="container">
+
+    <!-- OVERVIEW -->
+    <section id="Overview">
+      <p class="section-eyebrow">01 · Overview</p>
+      <h2>Executive Summary</h2>
+      <p>This dataset provides a detailed overview of the United Kingdom's energy consumption, covering 17 distinct energy sources alongside total consumption figures. It tracks the UK's renewable energy transition over three decades, from 1990 through 2020.</p>
+      <p>Data is measured in million tonnes of oil equivalent (mtoe), where 1 mtoe = 42 petajoules (42 × 10<sup>15</sup> J), and includes the percentage of total consumption sourced from renewables.</p>
+
+      <div class="meta-list">
+        <div class="meta-item">
+          <div class="meta-label">Sources Covered</div>
+          <div class="meta-value">17 energy sources + total</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Unit of Measure</div>
+          <div class="meta-value">mtoe (million tonnes oil eq.)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Conversion</div>
+          <div class="meta-value">1 mtoe = 42 petajoules</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Rounding</div>
+          <div class="meta-value">3 decimal places</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Period</div>
+          <div class="meta-value">1990 – 2020</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Adjustments</div>
+          <div class="meta-value">Cross-boundary correction on biofuels</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPIs -->
+    <section id="KPIs">
+      <p class="section-eyebrow">02 · Key Performance Indicators</p>
+      <h2>Primary KPIs</h2>
+      <div class="kpi-grid">
+        <div class="kpi-col">
+          <div class="kpi-number">+35%</div>
+          <h3>Growth</h3>
+          <p>Renewable energy consumption growth rate, 1993–1994</p>
+        </div>
+        <div class="kpi-col">
+          <div class="kpi-number">Top 5</div>
+          <h3>Ranking</h3>
+          <p>Leading renewable energy sources identified in 2020</p>
+        </div>
+        <div class="kpi-col">
+          <div class="kpi-number">6.48</div>
+          <h3>mtoe</h3>
+          <p>Wind/Wave/Tidal output in 2020, up from 0.001 in 1990</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- INSIGHTS -->
+    <section id="Insights">
+      <p class="section-eyebrow">03 · Key Insights</p>
+      <h2>Renewable Energy Consumption Growth</h2>
+
+      <img class="section-img" src="Images/Uk Renewable images/Renewable energy line graph.jpg" alt="Renewable energy growth line graph">
+      <p class="img-caption">Fig. 1 — UK renewable energy consumption growth rate, 1990–2020</p>
+
+      <div class="insight-callout">
+        <p>Between 1993 and 1994, the UK saw a <strong>35% surge</strong> in renewable consumption — the steepest single-year increase in the dataset — driven by infrastructure investment and early policy support.</p>
+      </div>
+
+      <ul>
+        <li><strong>1993–1994:</strong> 35% surge in renewable consumption</li>
+        <li><strong>1996:</strong> Minor decline of 2.38%</li>
+        <li><strong>1997 onwards:</strong> Sustained growth with fluctuations, supported by technology improvements and climate urgency</li>
+      </ul>
+    </section>
+
+    <!-- TOP 5 -->
+    <section>
+      <p class="section-eyebrow">04 · Source Breakdown</p>
+      <h2>Top 5 Renewable Sources in 2020</h2>
+
+      <img class="section-img" src="Images/Uk Renewable images/Top 5 energy trend.png" alt="Top 5 renewable energy sources trend">
+      <p class="img-caption">Fig. 2 — Top 5 renewable sources by consumption volume, 1990–2020</p>
+
+      <ol class="ranked-list">
+        <li>
+          <span class="rank-num">1</span>
+          <div class="rank-content">
+            <strong>Wind / Wave / Tidal</strong>
+            <span>Grew from 0.001 mtoe (1990) to 6.481 mtoe (2020) — the most dramatic growth of any source</span>
+          </div>
+        </li>
+        <li>
+          <span class="rank-num">2</span>
+          <div class="rank-content">
+            <strong>Wood Energy</strong>
+            <span>Stable long-term contributor ranging from 1.108 to 3.367 mtoe across the period</span>
+          </div>
+        </li>
+        <li>
+          <span class="rank-num">3</span>
+          <div class="rank-content">
+            <strong>Municipal Solid Waste (MSW)</strong>
+            <span>Increased from 0.065 mtoe to 2.469 mtoe, reflecting growth in waste-to-energy infrastructure</span>
+          </div>
+        </li>
+        <li>
+          <span class="rank-num">4</span>
+          <div class="rank-content">
+            <strong>Biomass</strong>
+            <span>Grew from 0.074 mtoe to approximately 2.1–2.4 mtoe by 2020</span>
+          </div>
+        </li>
+        <li>
+          <span class="rank-num">5</span>
+          <div class="rank-content">
+            <strong>Biodiesel</strong>
+            <span>Reached 0.359 mtoe in 2020, driven by transport sector mandates</span>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="Dashboard">
+      <p class="section-eyebrow">05 · Interactive Dashboard</p>
+      <h2>Explore the Data</h2>
+      <div class="dashboard-cta">
+        <h3>View the Full Tableau Dashboard</h3>
+        <p>Interact with the complete dataset — filter by source, year, and consumption metric.</p>
+        <a class="btn" href="https://public.tableau.com/views/UKRenewableenergyconsumption1990-2020/Dashboard1?:language=en-GB&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link" target="_blank">
+          Open Dashboard
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- RECOMMENDATIONS -->
+    <section id="Recommendations">
+      <p class="section-eyebrow">06 · Recommendations</p>
+      <h2>Strategic Recommendations</h2>
+      <div class="recommendations-grid">
+        <div class="rec-card">
+          <img class="rec-icon" src="Images/Uk Renewable images/Policy icon.png" alt="">
+          <h3>Policy &amp; Regulatory Support</h3>
+          <p>Implement incentives and reduce barriers for renewable projects. Provide financial support for innovation and scaling across all source types.</p>
+        </div>
+        <div class="rec-card">
+          <img class="rec-icon" src="Images/Uk Renewable images/Partnership.Icon.png" alt="">
+          <h3>Public–Private Partnerships</h3>
+          <p>Encourage collaboration between governments, industry, and academia to accelerate renewable energy development and deployment.</p>
+        </div>
+        <div class="rec-card">
+          <img class="rec-icon" src="Images/Uk Renewable images/education icon.png" alt="">
+          <h3>Education &amp; Workforce</h3>
+          <p>Build training programmes to develop renewable energy skills and prepare workers for future green economy jobs at all levels.</p>
+        </div>
+        <div class="rec-card">
+          <img class="rec-icon" src="Images/Uk Renewable images/Global.png" alt="">
+          <h3>International Collaboration</h3>
+          <p>Share technology, best practices, and clean energy strategies globally to support a faster and more equitable shift to renewables.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONCLUSION -->
+    <section id="Conclusions">
+      <p class="section-eyebrow">07 · Conclusion</p>
+      <h2>Summary</h2>
+      <div class="conclusion-box">
+        <p>The dataset confirms the UK's significant progress in renewable energy adoption over three decades. Wind, waste-to-energy, and biomass have grown from negligible contributors to major pillars of the energy mix.</p>
+        <p>Continued policy commitment, sustained investment, and international collaboration will be key to maintaining and accelerating this growth as the UK works toward its net-zero commitments.</p>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="footer">
+    Made by <a href="index.html">Karel-Océane Akolly</a> · Portfolio Project · Data Source: UK Government Energy Statistics
+  </footer>
+
+</body>
+</html>
