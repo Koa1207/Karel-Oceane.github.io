@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Shade Gap — Foundation Accessibility For Darker Shades</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a0f0a;
+    --cream: #faf4ed;
+    --warm: #f5e8d8;
+    --blush: #e8c4a8;
+    --terra: #c47a52;
+    --burnt: #8b4513;
+    --espresso: #3d1a08;
+    --deep: #5c2e10;
+    --plum: #7a3f6e;
+    --gold: #c9a84c;
+    --muted: #8a6a58;
+    --border: rgba(139,69,19,0.15);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* ── PROGRESS BAR ── */
+  #progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--terra), var(--gold));
+    width: 0%;
+    z-index: 1000;
+    transition: width 0.1s linear;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 16px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(250,244,237,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--espresso);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--burnt); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 120px 48px 80px;
+    position: relative;
+    overflow: hidden;
+    background: var(--espresso);
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+  }
+
+  .hero-shade {
+    flex: 1;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+  }
+
+  .hero-bg:hover .hero-shade { opacity: 0.4; }
+  .hero-bg:hover .hero-shade:hover { opacity: 0.9; }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+  }
+
+  .hero-tag {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-tag::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(52px, 8vw, 96px);
+    font-weight: 300;
+    color: #faf4ed;
+    line-height: 1.0;
+    letter-spacing: -1px;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--blush);
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    color: rgba(250,244,237,0.7);
+    max-width: 560px;
+    line-height: 1.7;
+    margin-bottom: 40px;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+  }
+
+  .hero-stat-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 40px;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .hero-stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(250,244,237,0.5);
+    margin-top: 4px;
+  }
+
+  /* ── PORTFOLIO BACK LINK ── */
+  .portfolio-link-wrap {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(250,244,237,0.1);
+  }
+
+  .portfolio-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(250,244,237,0.4);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .portfolio-link:hover {
+    color: var(--gold);
+  }
+
+  .portfolio-link::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 1px;
+    background: currentColor;
+    transition: width 0.2s;
+  }
+
+  .portfolio-link:hover::before {
+    width: 40px;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    right: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: rgba(250,244,237,0.4);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 48px;
+    background: linear-gradient(to bottom, transparent, rgba(250,244,237,0.4));
+    animation: scrollPulse 2s infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* ── ARTICLE LAYOUT ── */
+  .article {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+
+  /* ── CHAPTER HEADER ── */
+  .chapter {
+    padding: 100px 0 60px;
+    border-top: 1px solid var(--border);
+    margin-top: 80px;
+  }
+
+  .chapter-num {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--terra);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .chapter-num::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 80px;
+  }
+
+  .chapter h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--espresso);
+    max-width: 700px;
+    margin-bottom: 24px;
+  }
+
+  .chapter-intro {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 640px;
+    line-height: 1.8;
+    font-weight: 300;
+  }
+
+  /* ── PULL QUOTE ── */
+  .pull-quote {
+    margin: 64px 0;
+    padding: 48px 0 48px 48px;
+    border-left: 3px solid var(--terra);
+    position: relative;
+  }
+
+  .pull-quote::before {
+    content: '"';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 120px;
+    color: var(--blush);
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    line-height: 1;
+    opacity: 0.5;
+  }
+
+  .pull-quote p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--espresso);
+    line-height: 1.4;
+    max-width: 600px;
+  }
+
+  .pull-quote cite {
+    display: block;
+    margin-top: 16px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--terra);
+    font-style: normal;
+  }
+
+  /* ── BODY TEXT ── */
+  .body-text {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin: 48px 0;
+  }
+
+  .body-text p {
+    font-size: 16px;
+    color: var(--ink);
+    line-height: 1.9;
+  }
+
+  .body-text p + p { margin-top: 20px; }
+
+  /* ── LIGHTNESS STRIP ── */
+  .lightness-section {
+    margin: 64px 0;
+  }
+
+  .lightness-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .lightness-strip {
+    display: flex;
+    height: 80px;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: crosshair;
+    position: relative;
+  }
+
+  .ls-bar {
+    flex: 1;
+    transition: flex 0.4s ease;
+    position: relative;
+  }
+
+  .ls-bar:hover {
+    flex: 3;
+  }
+
+  .ls-bar::after {
+    content: attr(data-label);
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    color: rgba(255,255,255,0.8);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .ls-bar:hover::after { opacity: 1; }
+
+  .ls-axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* ── BIG STAT ── */
+  .big-stat {
+    margin: 64px 0;
+    padding: 64px;
+    background: var(--espresso);
+    border-radius: 4px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .big-stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 120px;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .big-stat-text h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 300;
+    color: var(--cream);
+    margin-bottom: 12px;
+  }
+
+  .big-stat-text p {
+    font-size: 15px;
+    color: rgba(250,244,237,0.65);
+    line-height: 1.8;
+    max-width: 460px;
+  }
+
+  /* ── DEPTH BAR CHART ── */
+  .depth-bars {
+    margin: 48px 0;
+  }
+
+  .depth-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14px;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .depth-bar-row.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .depth-bar-label {
+    width: 100px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .depth-bar-track {
+    flex: 1;
+    height: 36px;
+    background: rgba(139,69,19,0.07);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .depth-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    width: 0%;
+    transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    padding-left: 12px;
+  }
+
+  .depth-bar-pct {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.9);
+    white-space: nowrap;
+  }
+
+  .depth-bar-pct-dark {
+    color: rgba(61,26,8,0.7);
+  }
+
+  /* ── BRAND CARDS ── */
+  .brand-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin: 48px 0;
+  }
+
+  .brand-card {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .brand-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(61,26,8,0.12);
+  }
+
+  .brand-card-top {
+    padding: 24px;
+    background: var(--espresso);
+  }
+
+  .brand-card-rank {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .brand-card-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--cream);
+    letter-spacing: 0.5px;
+  }
+
+  .brand-card-score {
+    font-size: 12px;
+    color: rgba(250,244,237,0.5);
+    margin-top: 4px;
+  }
+
+  .brand-card-body {
+    padding: 20px 24px;
+    background: var(--warm);
+  }
+
+  .brand-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .brand-stat-row:last-child { border-bottom: none; }
+
+  .brand-stat-key { color: var(--muted); }
+
+  .brand-stat-val {
+    font-weight: 500;
+    color: var(--espresso);
+  }
+
+  .brand-strategy {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 4px 10px;
+    background: var(--espresso);
+    color: var(--gold);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-radius: 2px;
+  }
+
+  /* ── RETAILER COMPARISON ── */
+  .retailer-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin: 48px 0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .retailer-panel {
+    padding: 48px 40px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .retailer-panel:hover { opacity: 0.9; }
+
+  .retailer-panel.sephora { background: var(--espresso); }
+  .retailer-panel.ulta { background: var(--plum); }
+
+  .retailer-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--cream);
+    margin-bottom: 8px;
+  }
+
+  .retailer-pct {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 64px;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .retailer-sub {
+    font-size: 12px;
+    color: rgba(250,244,237,0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .retailer-dist {
+    display: flex;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 24px;
+    gap: 1px;
+  }
+
+  .rd-seg { border-radius: 1px; }
+
+  /* ── SCATTER VISUAL ── */
+  .scatter-section {
+    margin: 48px 0;
+    padding: 48px;
+    background: var(--warm);
+    border-radius: 4px;
+  }
+
+  .scatter-section h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--espresso);
+    margin-bottom: 8px;
+  }
+
+  .scatter-section p {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    max-width: 600px;
+  }
+
+  /* ── TWIST BOX ── */
+  .twist-box {
+    margin: 64px 0;
+    padding: 64px;
+    background: var(--warm);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .twist-box::before {
+    content: 'PLOT TWIST';
+    position: absolute;
+    top: 24px;
+    right: 32px;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--terra);
+    opacity: 0.4;
+    text-transform: uppercase;
+  }
+
+  .twist-box h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--espresso);
+    margin-bottom: 20px;
+    max-width: 600px;
+    line-height: 1.2;
+  }
+
+  .twist-box p {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 600px;
+    line-height: 1.9;
+  }
+
+  /* ── CONCLUSION CARDS ── */
+  .conclusion-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+    margin: 48px 0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .conc-card {
+    padding: 40px 32px;
+    background: var(--espresso);
+  }
+
+  .conc-card:nth-child(2) { background: var(--deep); }
+  .conc-card:nth-child(3) { background: var(--burnt); }
+
+  .conc-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px;
+    font-weight: 300;
+    color: rgba(250,244,237,0.2);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+
+  .conc-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--cream);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  .conc-text {
+    font-size: 13px;
+    color: rgba(250,244,237,0.65);
+    line-height: 1.8;
+  }
+
+  /* ── LIMITATIONS ── */
+  .limitations {
+    margin: 80px 0;
+    padding: 40px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .limitations h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .limitations ol {
+    padding-left: 20px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.9;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--espresso);
+    padding: 48px;
+    text-align: center;
+  }
+
+  footer p {
+    font-size: 12px;
+    color: rgba(250,244,237,0.4);
+    letter-spacing: 1px;
+  }
+
+  footer strong {
+    color: var(--gold);
+    font-weight: 400;
+  }
+
+  /* ── ANIMATIONS ── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
+  /* ── INTERACTIVE TOOLTIP ── */
+  .tooltip-wrap {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dashed var(--terra);
+    cursor: help;
+  }
+
+  .tooltip-wrap .tt {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--espresso);
+    color: var(--cream);
+    font-size: 12px;
+    padding: 8px 14px;
+    border-radius: 3px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    z-index: 10;
+  }
+
+  .tooltip-wrap:hover .tt { opacity: 1; }
+
+  /* ── TABLEAU BUTTON ── */
+  .tableau-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 32px;
+    border: 1px solid var(--terra);
+    color: var(--terra);
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .tableau-btn::after {
+    content: '↗';
+    font-size: 14px;
+    transition: transform 0.2s;
+  }
+
+  .tableau-btn:hover {
+    background: var(--terra);
+    color: var(--cream);
+  }
+
+  .tableau-btn:hover::after {
+    transform: translate(2px, -2px);
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 24px 60px; }
+    .article { padding: 0 24px; }
+    .body-text { grid-template-columns: 1fr; }
+    .brand-grid { grid-template-columns: 1fr; }
+    .retailer-split, .conclusion-grid { grid-template-columns: 1fr; }
+    .big-stat { grid-template-columns: 1fr; padding: 40px 32px; }
+    .big-stat-num { font-size: 80px; }
+    .twist-box { padding: 40px 32px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<nav>
+  <div class="nav-logo">The Shade Gap</div>
+  <ul class="nav-links">
+    <li><a href="#market">The Market</a></li>
+    <li><a href="#brands">Brands</a></li>
+    <li><a href="#retailers">Sephora vs Ulta</a></li>
+    <li><a href="#leaders">Top 5</a></li>
+    <li><a href="#conclusion">Findings</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Foundation Accessibility · Data Analysis · 2026</div>
+    <h1>Only 1 in 5<br><span style="display:block;margin-top:0.15em;">shades is <em>deep</em></span></h1>
+    <p class="hero-sub">A data-driven investigation into foundation shade accessibility for darker skin tones across Sephora, Ulta and 30+ beauty brands.</p>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-val">2,386</div>
+        <div class="hero-stat-label">Shades analysed</div>
+      </div>
+      <div>
+        <div class="hero-stat-val">20.3%</div>
+        <div class="hero-stat-label">Deep shade share</div>
+      </div>
+      <div>
+        <div class="hero-stat-val">30+</div>
+        <div class="hero-stat-label">Brands assessed</div>
+      </div>
+    </div>
+    <div class="portfolio-link-wrap">
+      <a href="index.html" class="portfolio-link">Back to portfolio</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<div class="article">
+
+  <!-- ── TABLEAU LINK ── -->
+  <div class="fade-in" style="padding: 80px 0 0;">
+    <a href="https://public.tableau.com/views/RevisedFoundationAccessibilityForDarkerShades/Dashboard1?:language=en-GB&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link" target="_blank" class="tableau-btn">
+      View the interactive dashboard
+    </a>
+  </div>
+
+  <!-- ── CHAPTER 1: MARKET ── -->
+  <section class="chapter fade-in" id="market">
+    <div class="chapter-num">Chapter One</div>
+    <h2>The market starts with a structural imbalance</h2>
+    <p class="chapter-intro">Before we examine a single brand or retailer, the data reveals a gap that no stocking decision can fully close. The beauty industry has built its foundation shade market around lighter skin tones.</p>
+  </section>
+
+  <div class="lightness-section fade-in">
+    <div class="lightness-label">Foundation shade colours — plotted by CIE L* lightness · hover to explore</div>
+    <div class="lightness-strip" id="lightnessStrip"></div>
+    <div class="ls-axis">
+      <span>← Very Deep (L* &lt; 35)</span>
+      <span>Deep · Medium · Light · Fair</span>
+      <span>Fair (L* ≥ 72) →</span>
+    </div>
+  </div>
+
+  <div class="depth-bars fade-in" id="depthBars">
+    <div class="depth-bar-row" data-width="8.8" data-color="#3d1a08" data-dark="false">
+      <div class="depth-bar-label">Very Deep</div>
+      <div class="depth-bar-track">
+        <div class="depth-bar-fill" style="background:#3d1a08;">
+          <span class="depth-bar-pct">8.8%</span>
+        </div>
+      </div>
+    </div>
+    <div class="depth-bar-row" data-width="11.5" data-color="#7a4828" data-dark="false">
+      <div class="depth-bar-label">Deep</div>
+      <div class="depth-bar-track">
+        <div class="depth-bar-fill" style="background:#7a4828;">
+          <span class="depth-bar-pct">11.5%</span>
+        </div>
+      </div>
+    </div>
+    <div class="depth-bar-row" data-width="26.7" data-color="#c49b70" data-dark="true">
+      <div class="depth-bar-label">Medium</div>
+      <div class="depth-bar-track">
+        <div class="depth-bar-fill" style="background:#c49b70;">
+          <span class="depth-bar-pct depth-bar-pct-dark">26.7%</span>
+        </div>
+      </div>
+    </div>
+    <div class="depth-bar-row" data-width="38.5" data-color="#e8c9a8" data-dark="true">
+      <div class="depth-bar-label">Light</div>
+      <div class="depth-bar-track">
+        <div class="depth-bar-fill" style="background:#e8c9a8;">
+          <span class="depth-bar-pct depth-bar-pct-dark">38.5%</span>
+        </div>
+      </div>
+    </div>
+    <div class="depth-bar-row" data-width="14.5" data-color="#f5dfc8" data-dark="true">
+      <div class="depth-bar-label">Fair</div>
+      <div class="depth-bar-track">
+        <div class="depth-bar-fill" style="background:#f5dfc8;">
+          <span class="depth-bar-pct depth-bar-pct-dark">14.5%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="big-stat fade-in">
+    <div class="big-stat-num">20.3%</div>
+    <div class="big-stat-text">
+      <h3>of all foundation shades are Deep or Very Deep</h3>
+      <p>The remaining 79.7% serves lighter skin tones. Fair and Light alone account for 53% of the total market. This imbalance is structural — it exists before any brand or retailer decision is made, and no amount of stocking optimisation can compensate for it.</p>
+    </div>
+  </div>
+
+  <div class="body-text fade-in">
+    <div>
+      <p>Shade depth in this analysis is determined using <span class="tooltip-wrap">CIE L* lightness<span class="tt">Measured objectively from product HEX codes</span></span> derived from product HEX codes — not brand-provided shade names. This matters because naming conventions are not standardised across the industry. One brand's "deep" can be another brand's "medium."</p>
+      <p>By measuring the actual colour lightness of every shade, we can compare across brands and retailers on a consistent, objective scale. Five depth bands are defined by fixed L* thresholds: Very Deep below 35, Deep 35–45, Medium 45–55, Light 55–72, and Fair at 72 and above.</p>
+    </div>
+    <div>
+      <p>The distribution is not random. It reflects decades of product development decisions that prioritised lighter skin tones as the primary market. Deep and Very Deep shades were added incrementally — often as an afterthought — rather than designed as a core part of the range.</p>
+      <p>This is the baseline challenge. Any brand or retailer that wants to serve consumers with deeper skin tones is working against a market structure that was not built with them in mind.</p>
+    </div>
+  </div>
+
+  <!-- ── CHAPTER 2: BRANDS ── -->
+  <section class="chapter fade-in" id="brands">
+    <div class="chapter-num">Chapter Two</div>
+    <h2>Not all brands are equally culpable</h2>
+    <p class="chapter-intro">Some brands have made deliberate choices to serve deeper skin tones. But measuring that commitment requires more than a single percentage — and this is where most analysis goes wrong.</p>
+  </section>
+
+  <div class="pull-quote fade-in">
+    <p>A brand can appear highly inclusive simply by having a small, entirely deep-shade range. The number that matters is not the percentage alone — it is the percentage in combination with the total range.</p>
+    <cite>Foundation Accessibility Analysis · 2026</cite>
+  </div>
+
+  <div class="body-text fade-in">
+    <div>
+      <p>Marc Jacobs Beauty and Black Up both score 100% on deep shade coverage — every single shade they sell is classified as Deep or Very Deep. That sounds extraordinary. But both brands have very small total ranges. Serving a consumer with a deep skin tone who wants variety, different finishes, or different formulations? A 100% score with 10 shades serves them far less well than a 50% score with 150 shades.</p>
+    </div>
+    <div>
+      <p>This is why deep shade percentage alone is a misleading metric. The analysis requires two dimensions simultaneously: how committed is a brand to deeper tones as a proportion of its range, and how large is that range in absolute terms. Only brands that score highly on both dimensions offer genuinely accessible shade selection at scale.</p>
+    </div>
+  </div>
+
+  <div class="twist-box fade-in">
+    <h3>Introducing the Inclusivity Score</h3>
+    <p>To account for both dimensions simultaneously, an Inclusivity Score was developed — a composite of normalised deep shade percentage and normalised total shade count, scaled from 0 to 20. This score penalises brands with small deep-only ranges and rewards brands that combine genuine deep shade commitment with meaningful variety. A brand must do both to score highly.</p>
+  </div>
+
+  <!-- ── CHAPTER 3: RETAILERS ── -->
+  <section class="chapter fade-in" id="retailers">
+    <div class="chapter-num">Chapter Three</div>
+    <h2>Sephora vs Ulta — the headline is misleading</h2>
+    <p class="chapter-intro">At first glance, Sephora appears more inclusive. But the headline number hides a more complicated story — and a plot twist that changes the conclusion entirely.</p>
+  </section>
+
+  <div class="retailer-split fade-in">
+    <div class="retailer-panel sephora">
+      <div class="retailer-name">Sephora</div>
+      <div class="retailer-pct">25.8%</div>
+      <div class="retailer-sub">Deep shade coverage · 1,136 total shades</div>
+      <div class="retailer-dist">
+        <div class="rd-seg" style="width:4.9%;background:#3d1a08;"></div>
+        <div class="rd-seg" style="width:8.1%;background:#7a4828;"></div>
+        <div class="rd-seg" style="width:41.8%;background:#c49b70;"></div>
+        <div class="rd-seg" style="width:14.8%;background:#e8c9a8;"></div>
+        <div class="rd-seg" style="width:9.5%;background:#f5dfc8;"></div>
+        <div class="rd-seg" style="flex:1;background:rgba(250,244,237,0.1);"></div>
+      </div>
+    </div>
+    <div class="retailer-panel ulta">
+      <div class="retailer-name">Ulta</div>
+      <div class="retailer-pct">24.5%</div>
+      <div class="retailer-sub">Deep shade coverage · 1,250 total shades</div>
+      <div class="retailer-dist">
+        <div class="rd-seg" style="width:5.0%;background:#3d1a08;"></div>
+        <div class="rd-seg" style="width:11.4%;background:#7a4828;"></div>
+        <div class="rd-seg" style="width:38.6%;background:#c49b70;"></div>
+        <div class="rd-seg" style="width:13.6%;background:#e8c9a8;"></div>
+        <div class="rd-seg" style="width:11.9%;background:#f5dfc8;"></div>
+        <div class="rd-seg" style="flex:1;background:rgba(250,244,237,0.1);"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="body-text fade-in">
+    <div>
+      <p>The 1.3 percentage point gap between Sephora and Ulta looks like a clear result. But two complications immediately arise. First, Ulta actually carries a higher share of Very Deep shades — 5.0% versus Sephora's 4.9%. The deepest tones, which are the hardest to find, are slightly better represented at Ulta.</p>
+    </div>
+    <div>
+      <p>Second — and more significantly — Ulta carries a higher proportion of uncategorised shades at 11.4% compared to Sephora's 8.1%. These shades could not be depth-classified from their HEX codes, which means Ulta's true deep coverage may be understated. The headline gap is partly a measurement artefact.</p>
+    </div>
+  </div>
+
+  <div class="twist-box fade-in">
+    <h3>When you look at the same brand at both stores, the picture reverses</h3>
+    <p>The real test is not comparing retailer averages — it is comparing the same brand's deep shade coverage at each retailer. When brands stocked at both Sephora and Ulta are isolated, several demonstrate significantly stronger deep shade coverage at Ulta. Too Faced offers 8.2 percentage points more deep coverage at Ulta. MAC offers 6.5 percentage points more. Bare Minerals 5.5 points more. The retailer average obscures these brand-level differences entirely. The conclusion is clear: <strong>retailer averages can mislead. Brand stocking decisions are the true driver of access.</strong></p>
+  </div>
+
+  <div class="scatter-section fade-in">
+    <h3>Does the same brand offer more deep shades at one retailer?</h3>
+    <p>Each dot below represents a brand stocked at both retailers. Dots above the diagonal line mean Ulta stocks more deep shades for that brand. Dots below mean Sephora leads. The majority of dots sit above the line.</p>
+    <svg viewBox="0 0 600 320" style="display:block;width:100%;margin-top:16px;">
+      <!-- Axes -->
+      <line x1="50" y1="20" x2="50" y2="270" stroke="rgba(139,69,19,0.2)" stroke-width="1"/>
+      <line x1="50" y1="270" x2="580" y2="270" stroke="rgba(139,69,19,0.2)" stroke-width="1"/>
+      <!-- Gridlines -->
+      <line x1="50" y1="207" x2="580" y2="207" stroke="rgba(139,69,19,0.06)" stroke-width="0.5"/>
+      <line x1="50" y1="145" x2="580" y2="145" stroke="rgba(139,69,19,0.06)" stroke-width="0.5"/>
+      <line x1="50" y1="82" x2="580" y2="82" stroke="rgba(139,69,19,0.06)" stroke-width="0.5"/>
+      <line x1="156" y1="20" x2="156" y2="270" stroke="rgba(139,69,19,0.06)" stroke-width="0.5"/>
+      <line x1="262" y1="20" x2="262" y2="270" stroke="rgba(139,69,19,0.06)" stroke-width="0.5"/>
+      <line x1="368" y1="20" x2="368" y2="270" stroke="rgba(139,69,19,0.06)" stroke-width="0.5"/>
+      <line x1="474" y1="20" x2="474" y2="270" stroke="rgba(139,69,19,0.06)" stroke-width="0.5"/>
+      <!-- Equal line Y=X diagonal -->
+      <line x1="50" y1="270" x2="580" y2="20" stroke="rgba(139,69,19,0.25)" stroke-dasharray="6,4" stroke-width="1.5"/>
+      <text x="552" y="15" font-size="9" fill="var(--muted)" font-family="Jost" font-style="italic">Equal coverage</text>
+      <!-- Axis tick labels -->
+      <text x="50"  y="284" text-anchor="middle" font-size="9" fill="var(--muted)" font-family="Jost">0%</text>
+      <text x="156" y="284" text-anchor="middle" font-size="9" fill="var(--muted)" font-family="Jost">10%</text>
+      <text x="262" y="284" text-anchor="middle" font-size="9" fill="var(--muted)" font-family="Jost">20%</text>
+      <text x="368" y="284" text-anchor="middle" font-size="9" fill="var(--muted)" font-family="Jost">30%</text>
+      <text x="474" y="284" text-anchor="middle" font-size="9" fill="var(--muted)" font-family="Jost">40%</text>
+      <text x="580" y="284" text-anchor="middle" font-size="9" fill="var(--muted)" font-family="Jost">50%</text>
+      <text x="43" y="270" text-anchor="end" font-size="9" fill="var(--muted)" font-family="Jost">0%</text>
+      <text x="43" y="207" text-anchor="end" font-size="9" fill="var(--muted)" font-family="Jost">10%</text>
+      <text x="43" y="145" text-anchor="end" font-size="9" fill="var(--muted)" font-family="Jost">20%</text>
+      <text x="43" y="82"  text-anchor="end" font-size="9" fill="var(--muted)" font-family="Jost">30%</text>
+      <text x="43" y="20"  text-anchor="end" font-size="9" fill="var(--muted)" font-family="Jost">40%</text>
+
+      <!-- DOTS -->
+      <circle cx="188" cy="204" r="7" fill="var(--plum)" opacity="0.8"/>
+      <circle cx="230" cy="75" r="8" fill="var(--plum)" opacity="0.85"/>
+      <circle cx="270" cy="158" r="7" fill="var(--plum)" opacity="0.8"/>
+      <circle cx="252" cy="67" r="7" fill="var(--plum)" opacity="0.8"/>
+      <circle cx="262" cy="75" r="7" fill="var(--plum)" opacity="0.8"/>
+      <circle cx="320" cy="128" r="7" fill="var(--plum)" opacity="0.8"/>
+      <circle cx="316" cy="112" r="7" fill="var(--plum)" opacity="0.8"/>
+      <circle cx="430" cy="18" r="7" fill="var(--plum)" opacity="0.8"/>
+      <circle cx="474" cy="51" r="8" fill="var(--plum)" opacity="0.85"/>
+      <circle cx="527" cy="23" r="7" fill="var(--plum)" opacity="0.8"/>
+      <circle cx="548" cy="25" r="7" fill="var(--plum)" opacity="0.8"/>
+
+      <!-- Axis labels -->
+      <text x="315" y="300" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="Jost">Sephora Deep Shade % →</text>
+      <text x="22" y="145" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="Jost" transform="rotate(-90 22 145)">Ulta Deep Shade % →</text>
+      <!-- Region labels -->
+      <text x="58" y="44" font-size="10" fill="var(--plum)" font-family="Jost" font-weight="500">Ulta stocks more deep shades for these brands</text>
+      <text x="580" y="258" text-anchor="end" font-size="10" fill="var(--muted)" font-family="Jost" font-style="italic">Sephora stocks more deep shades for these brands</text>
+    </svg>
+    <div style="display:flex;gap:20px;margin-top:12px;">
+      <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);">
+        <div style="width:10px;height:10px;border-radius:50%;background:var(--plum);"></div>Each dot represents a brand stocked at both retailers — dots above the line mean Ulta leads
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CHAPTER 4: TOP 5 ── -->
+  <section class="chapter fade-in" id="leaders">
+    <div class="chapter-num">Chapter Four</div>
+    <h2>The brands that get it right — and why</h2>
+    <p class="chapter-intro">Five brands consistently outperform on both dimensions of the Inclusivity Score. What is most revealing is that each reaches the top five by a completely different route.</p>
+  </section>
+
+  <div class="brand-grid fade-in">
+    <div class="brand-card">
+      <div class="brand-card-top">
+        <div class="brand-card-rank">#1</div>
+        <div class="brand-card-name">BLKOPL</div>
+        <div class="brand-card-score">Inclusivity Score: 20.0</div>
+      </div>
+      <div class="brand-card-body">
+        <div class="brand-stat-row"><span class="brand-stat-key">Deep Shade %</span><span class="brand-stat-val" style="color:var(--burnt);">69%</span></div>
+        <div class="brand-stat-row"><span class="brand-stat-key">Total Shades</span><span class="brand-stat-val">~58</span></div>
+        <div class="brand-strategy">Deep-First</div>
+        <p style="font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6;">Built entirely around deeper skin tones. Maximum commitment, limited variety — but unmatched dedication.</p>
+      </div>
+    </div>
+    <div class="brand-card">
+      <div class="brand-card-top">
+        <div class="brand-card-rank">#2</div>
+        <div class="brand-card-name">NYX Professional Makeup</div>
+        <div class="brand-card-score">Inclusivity Score: 18.6</div>
+      </div>
+      <div class="brand-card-body">
+        <div class="brand-stat-row"><span class="brand-stat-key">Deep Shade %</span><span class="brand-stat-val" style="color:var(--burnt);">53.3%</span></div>
+        <div class="brand-stat-row"><span class="brand-stat-key">Total Shades</span><span class="brand-stat-val">136</span></div>
+        <div class="brand-strategy">Balanced</div>
+        <p style="font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6;">Strong deep commitment and a large range. Accessible at scale — the most practically useful brand for deeper skin tones.</p>
+      </div>
+    </div>
+    <div class="brand-card">
+      <div class="brand-card-top">
+        <div class="brand-card-rank">#3</div>
+        <div class="brand-card-name">KVD Vegan Beauty</div>
+        <div class="brand-card-score">Inclusivity Score: 18.4</div>
+      </div>
+      <div class="brand-card-body">
+        <div class="brand-stat-row"><span class="brand-stat-key">Deep Shade %</span><span class="brand-stat-val">28.3%</span></div>
+        <div class="brand-stat-row"><span class="brand-stat-key">Total Shades</span><span class="brand-stat-val">136</span></div>
+        <div class="brand-strategy">Volume-Led</div>
+        <p style="font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6;">Lower deep percentage but large total range delivers meaningful absolute variety for deeper tones.</p>
+      </div>
+    </div>
+    <div class="brand-card">
+      <div class="brand-card-top">
+        <div class="brand-card-rank">#4</div>
+        <div class="brand-card-name">Bare Minerals</div>
+        <div class="brand-card-score">Inclusivity Score: 17.7</div>
+      </div>
+      <div class="brand-card-body">
+        <div class="brand-stat-row"><span class="brand-stat-key">Deep Shade %</span><span class="brand-stat-val" style="color:var(--burnt);">36.9%</span></div>
+        <div class="brand-stat-row"><span class="brand-stat-key">Total Shades</span><span class="brand-stat-val">370</span></div>
+        <div class="brand-strategy">Largest Range</div>
+        <p style="font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6;">Biggest total range in the dataset. Above-average deep % gives true scale inclusivity — 136 deep shades in absolute terms.</p>
+      </div>
+    </div>
+    <div class="brand-card">
+      <div class="brand-card-top">
+        <div class="brand-card-rank">#5</div>
+        <div class="brand-card-name">Morphe</div>
+        <div class="brand-card-score">Inclusivity Score: 16.2</div>
+      </div>
+      <div class="brand-card-body">
+        <div class="brand-stat-row"><span class="brand-stat-key">Deep Shade %</span><span class="brand-stat-val" style="color:var(--burnt);">47.6%</span></div>
+        <div class="brand-stat-row"><span class="brand-stat-key">Total Shades</span><span class="brand-stat-val">153</span></div>
+        <div class="brand-strategy">Balanced</div>
+        <p style="font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6;">Near-equal split between lighter and deeper shades — the closest any brand in the dataset comes to proportional representation.</p>
+      </div>
+    </div>
+    <div class="brand-card" style="opacity:0.6;">
+      <div class="brand-card-top" style="background:var(--muted);">
+        <div class="brand-card-rank" style="color:rgba(250,244,237,0.3);">#6</div>
+        <div class="brand-card-name">Anastasia Beverly Hills</div>
+        <div class="brand-card-score">Inclusivity Score: 12.5</div>
+      </div>
+      <div class="brand-card-body">
+        <div class="brand-stat-row"><span class="brand-stat-key">Score gap to #5</span><span class="brand-stat-val">−3.7 points</span></div>
+        <p style="font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6;">The gap between #5 and #6 marks a genuine performance tier. The top 5 consistently outperform on both dimensions.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CONCLUSION ── -->
+  <section class="chapter fade-in" id="conclusion">
+    <div class="chapter-num">Conclusion</div>
+    <h2>Three findings that change how you should shop</h2>
+    <p class="chapter-intro">The data leads to three conclusions — one about the industry, one about retailers, and one that is directly actionable for any consumer with a deeper skin tone.</p>
+  </section>
+
+  <div class="conclusion-grid fade-in">
+    <div class="conc-card">
+      <div class="conc-num">01</div>
+      <div class="conc-title">The inclusivity gap is structural</div>
+      <div class="conc-text">Deep and very deep shades account for only 20.3% of the market. No retailer or brand can fully compensate for this. Meaningful change requires brands to redesign their shade architecture from the ground up — not optimise their listings.</div>
+    </div>
+    <div class="conc-card">
+      <div class="conc-num">02</div>
+      <div class="conc-title">Brand choice drives access more than store choice</div>
+      <div class="conc-text">Sephora and Ulta look nearly equal at headline level. But for specific brands, one retailer can offer 5–8 percentage points more deep coverage. Choose by brand first, then check which store stocks the deeper shades.</div>
+    </div>
+    <div class="conc-card">
+      <div class="conc-num">03</div>
+      <div class="conc-title">Prioritise Inclusivity Score over retailer</div>
+      <div class="conc-text">BLKOPL, NYX, KVD Vegan Beauty, Bare Minerals and Morphe lead on both depth and range. Brands with a high inclusivity score maximise your chance of a match regardless of which store you shop in.</div>
+    </div>
+  </div>
+
+  <div class="limitations fade-in">
+    <h4>Limitations</h4>
+    <ol>
+      <li>Shade depth in the lightness distribution is derived from colour lightness (L*) values based on HEX codes, while other charts rely on brand-provided shade categories.</li>
+      <li>Uncategorised shades — particularly at Ulta — may influence distribution comparisons and could understate Ulta's true deep coverage.</li>
+      <li>Availability assumptions are based on listed inventory and do not account for stock fluctuations.</li>
+    </ol>
+  </div>
+
+</div>
+
+<footer>
+  <p>Foundation Accessibility For Darker Shades · Analysis by <strong>Karel-Oceane Akolly</strong> · 2,386 shades analysed across 30+ brands</p>
+</footer>
+
+<script>
+  // ── PROGRESS BAR ──
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = (scrollTop / docHeight) * 100;
+    document.getElementById('progress').style.width = pct + '%';
+  });
+
+  // ── HERO GRADIENT BARS ──
+  const shades = [
+    '#0d0503','#130806','#1a0c08','#21100a','#28140c','#2f180e','#361c10','#3d2012',
+    '#442414','#4b2816','#522c18','#59301a','#62361e','#6a3c22','#724226','#7a482a',
+    '#824e2e','#8a5432','#925a36','#9a603a','#a2663e','#aa6c42','#b27246','#ba784a',
+    '#c07e50','#c48258','#c88860','#cc8e68','#d09470','#d49a78','#d8a080','#dca688',
+    '#e0ac90','#e2b095','#e4b49a','#e6b89f','#e8bca4','#eac0a9','#ecc4ae','#eec8b3',
+    '#f0ccb8','#f1cebc','#f2d0c0','#f3d2c4','#f4d4c8','#f4d6ca','#f5d8cc','#f5dace',
+    '#f5dcd0','#f6ded2','#f6e0d4','#f6e2d6','#f7e4d8','#f7e6da','#f7e8dc','#f8eade',
+    '#f8ece0','#f8eee2','#f9f0e4','#f9f2e6','#faf4e8','#faf6ea','#faf8ec','#fbfaf0'
+  ];
+
+  const heroBg = document.getElementById('heroBg');
+  shades.forEach((color, i) => {
+    const div = document.createElement('div');
+    div.className = 'hero-shade';
+    div.style.background = color;
+    heroBg.appendChild(div);
+  });
+
+  // ── LIGHTNESS STRIP ──
+  const strip = document.getElementById('lightnessStrip');
+  const stripData = [
+    { color: '#0d0503', label: 'Very Deep' },
+    { color: '#1a0c08', label: 'Very Deep' },
+    { color: '#28140c', label: 'Very Deep' },
+    { color: '#361c10', label: 'Very Deep' },
+    { color: '#442414', label: 'Very Deep' },
+    { color: '#522c18', label: 'Very Deep' },
+    { color: '#62361e', label: 'Deep' },
+    { color: '#724226', label: 'Deep' },
+    { color: '#824e2e', label: 'Deep' },
+    { color: '#925a36', label: 'Deep' },
+    { color: '#a2663e', label: 'Deep' },
+    { color: '#b27246', label: 'Deep' },
+    { color: '#c07e50', label: 'Medium' },
+    { color: '#c88860', label: 'Medium' },
+    { color: '#d09470', label: 'Medium' },
+    { color: '#d8a080', label: 'Medium' },
+    { color: '#e0ac90', label: 'Medium' },
+    { color: '#e8bca4', label: 'Light' },
+    { color: '#ecc4ae', label: 'Light' },
+    { color: '#f0ccb8', label: 'Light' },
+    { color: '#f3d2c4', label: 'Light' },
+    { color: '#f5d8cc', label: 'Light' },
+    { color: '#f5dcd0', label: 'Light' },
+    { color: '#f6e0d4', label: 'Light' },
+    { color: '#f7e4d8', label: 'Fair' },
+    { color: '#f7e8dc', label: 'Fair' },
+    { color: '#f8ece0', label: 'Fair' },
+    { color: '#f9f0e4', label: 'Fair' },
+    { color: '#faf4e8', label: 'Fair' },
+    { color: '#faf8ec', label: 'Fair' },
+  ];
+
+  stripData.forEach(s => {
+    const bar = document.createElement('div');
+    bar.className = 'ls-bar';
+    bar.style.background = s.color;
+    bar.setAttribute('data-label', s.label);
+    strip.appendChild(bar);
+  });
+
+  // ── INTERSECTION OBSERVER ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+
+        // Animate depth bars
+        if (entry.target.id === 'depthBars') {
+          const rows = entry.target.querySelectorAll('.depth-bar-row');
+          rows.forEach((row, i) => {
+            setTimeout(() => {
+              row.classList.add('visible');
+              const fill = row.querySelector('.depth-bar-fill');
+              const width = row.getAttribute('data-width');
+              setTimeout(() => {
+                fill.style.width = width + '%';
+              }, 100);
+            }, i * 120);
+          });
+        }
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.fade-in, #depthBars').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
